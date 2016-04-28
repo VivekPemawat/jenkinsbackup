@@ -25,6 +25,7 @@
   <builders>
     <hudson.tasks.Shell>
       <command>echo &apos;hello&apos;
+echo &quot;checking github backup&quot;
 echo &quot;checking github backup&quot;</command>
     </hudson.tasks.Shell>
     <hudson.tasks.Shell>
