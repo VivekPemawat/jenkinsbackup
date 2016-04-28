@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty plugin="naginator@1.16.1">
+      <optOut>false</optOut>
+    </com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>name</name>
+          <description></description>
+          <defaultValue>vivek</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <hudson.plugins.heavy__job.HeavyJobProperty plugin="heavy-job@1.1">
+      <weight>1</weight>
+    </hudson.plugins.heavy__job.HeavyJobProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>echo &apos;hello&apos;</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>cd /Users/Shared/Jenkins/Home/jobs/logparser/builds
+pwd
+oldest_folder=`find . -maxdepth 1 -type d |  cut -sd / -f 2- | sort -n -r | head -n 9 | tail  -n 1`
+cd $oldest_folder
+pwd
+File=build.xml
+if grep -q &quot;&lt;keepLog&gt;false&lt;/keepLog&gt;&quot; &quot;$File&quot;; then
+   	cmd=&apos;echo &quot;As per purge policy console logs are removed but build is kept to provide re-run&quot; &gt; log&apos;
+	eval $cmd
+    rm -f logerrorLinks.html
+    rm -f loginfoLinks.html
+    rm -f logwarningLinks.html
+    rm -f log_content.html
+    rm -f log.html
+    rm -f log_ref.html
+    echo &quot;hell&quot;
+    
+ fi
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.plugins.logparser.LogParserPublisher plugin="log-parser@2.0">
+      <unstableOnWarning>true</unstableOnWarning>
+      <failBuildOnError>true</failBuildOnError>
+      <showGraphs>false</showGraphs>
+      <useProjectRule>false</useProjectRule>
+    </hudson.plugins.logparser.LogParserPublisher>
+  </publishers>
+  <buildWrappers/>
+</project>
