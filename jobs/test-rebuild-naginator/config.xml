@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty plugin="naginator@1.16.1">
+      <optOut>false</optOut>
+    </com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>name</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>echo &apos;hello&apos;</command>
+    </hudson.tasks.Shell>
+    <org.jenkinsci.plugins.exportparams.ExportParametersBuilder plugin="export-params@1.1">
+      <filePath>&quot;$name&quot;</filePath>
+      <fileFormat>properties</fileFormat>
+      <keyPattern></keyPattern>
+      <useRegexp>false</useRegexp>
+    </org.jenkinsci.plugins.exportparams.ExportParametersBuilder>
+    <hudson.plugins.groovy.SystemGroovy plugin="groovy@1.29">
+      <scriptSource class="hudson.plugins.groovy.StringScriptSource">
+        <command>envVars = build.getEnvironment()
+data_var = &quot;YOUR_PARAMETER_NAME&quot;
+data = envVars.get(data_var)
+data_file_path = build.workspace.toString() +  &quot;/&quot; +  data_var + &quot;.txt&quot;
+
+if(build.workspace.isRemote())
+{
+    channel = build.workspace.channel
+    fp = new hudson.FilePath(channel, data_file_path)
+} else {
+    fp = new hudson.FilePath(data_file_path)
+}
+
+if(fp != null)
+{
+    fp.write(data, null)
+} 
+</command>
+      </scriptSource>
+      <bindings></bindings>
+      <classpath></classpath>
+    </hudson.plugins.groovy.SystemGroovy>
+  </builders>
+  <publishers>
+    <com.chikli.hudson.plugin.naginator.NaginatorPublisher plugin="naginator@1.16.1">
+      <regexpForRerun></regexpForRerun>
+      <rerunIfUnstable>false</rerunIfUnstable>
+      <rerunMatrixPart>true</rerunMatrixPart>
+      <checkRegexp>false</checkRegexp>
+      <regexpForMatrixParent>false</regexpForMatrixParent>
+      <delay class="com.chikli.hudson.plugin.naginator.ProgressiveDelay">
+        <increment>300</increment>
+        <max>10800</max>
+      </delay>
+      <maxSchedule>0</maxSchedule>
+    </com.chikli.hudson.plugin.naginator.NaginatorPublisher>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.envfile.EnvFileBuildWrapper plugin="envfile@1.2"/>
+  </buildWrappers>
+</project>
